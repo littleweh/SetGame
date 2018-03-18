@@ -9,6 +9,30 @@
 import Foundation
 import UIKit
 
+enum CardFeatureItem: Int, CustomStringConvertible {
+
+    var description: String {
+        switch self {
+        case .color: return "color"
+        case .number: return "number"
+        case .symbol: return "symbol"
+        case .shading: return "shading"
+        }
+    }
+
+    case color = 0
+    case number = 1
+    case symbol = 2
+    case shading = 3
+
+    static var all = [CardFeatureItem.color, .number, .symbol, .shading]
+}
+
+enum CardFeature: Int {
+    case one = 0, two, three
+    static var all = [CardFeature.one, .two, .three]
+}
+
 enum SetNumber: Int, CustomStringConvertible {
     var description: String {
         return "\(self.rawValue + 1)"

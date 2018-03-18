@@ -10,24 +10,22 @@ import Foundation
 
 struct CardDeck {
     private(set) var cards = [Card]()
+    private var features = [CardFeature]()
 
     init() {
-        for color in SetColor.all {
-            for symbol in SetSymbol.all {
-                for shading in SetShading.all {
-                    for number in SetNumber.all {
+        // need to use recursive or other method?
+        for feature1 in CardFeature.all{
+            for feature2 in CardFeature.all {
+                for feature3 in CardFeature.all {
+                    for feature4 in CardFeature.all {
                         cards.append(
-                            Card(
-                                number: number,
-                                symbol: symbol,
-                                shading: shading,
-                                color: color
-                            )
+                            Card(features: [feature1, feature2, feature3, feature4])
                         )
                     }
                 }
             }
         }
+
     }
 
     mutating func draw() -> Card? {

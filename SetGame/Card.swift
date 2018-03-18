@@ -9,10 +9,5 @@
 import Foundation
 
 struct Card {
-    var number: SetNumber
-    var symbol: SetSymbol
-    var shading: SetShading
-    var color: SetColor
-
-    
+    var features = [CardFeature]()    
 }
