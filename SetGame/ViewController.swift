@@ -21,15 +21,19 @@ class ViewController: UIViewController {
     }
 
     @IBAction func cardButtonTapped(_ sender: UIButton) {
-        sender.reversesTitleShadowWhenHighlighted = false
         sender.isSelected = !sender.isSelected
-        if sender.isSelected == true {
-            sender.layer.borderColor = UIColor.yellow.cgColor
-            sender.layer.borderWidth = 3.0
-        } else {
-            sender.layer.borderColor = UIColor.clear.cgColor
-            sender.layer.borderWidth = 0.0
+        if let index = cardButtons.index(of: sender) {
+            if sender.isSelected == true {
+                sender.layer.borderColor = UIColor.yellow.cgColor
+                sender.layer.borderWidth = 3.0
+                chooseCard(with: cards[index])
+            } else {
+                sender.layer.borderColor = UIColor.clear.cgColor
+                sender.layer.borderWidth = 0.0
+                deselectCard(with: cards[index])
+            }
         }
+
     }
 
     var deck = CardDeck()
@@ -44,10 +48,38 @@ class ViewController: UIViewController {
         }
     }
 
+    var chosenCards = [Card]() {
+        didSet {
+            print("chosen Cards didSet with \(chosenCards.count) cards")
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         gameStart()
 
+    }
+
+    func chooseCard(with card: Card) {
+        assert(chosenCards.count < 3, "3 chosenCards at most")
+        chosenCards.append(card)
+        if chosenCards.count == 3 {
+            let isSet = isCardsMatchedSet(with: chosenCards)
+            if isSet {
+                print("Set matched")
+            } else {
+                print("Set not matched")
+            }
+        }
+    }
+
+    func deselectCard(with card: Card) {
+        assert(chosenCards.count > 0 && chosenCards.count < 3, "deselect card only allowed when 1 or 2 card(s) are chosen")
+        if let index = chosenCards.index(of: card) {
+            chosenCards.remove(at: index)
+        } else {
+            print("the card is not in chosen cards")
+        }
     }
 
     func isCardsMatchedSet(with cards: [Card]) -> Bool {
