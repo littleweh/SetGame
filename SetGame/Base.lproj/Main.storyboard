@@ -287,19 +287,31 @@
                                     <action selector="dealThreeCardsButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="HgN-uQ-EbA"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cards: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="11R-wn-VXw">
+                                <rect key="frame" x="285" y="627" width="80" height="30"/>
+                                <color key="backgroundColor" red="0.016804177310000001" green="0.19835099580000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="11R-wn-VXw" firstAttribute="bottom" secondItem="qJo-PG-3vX" secondAttribute="bottom" id="0GR-aD-gcr"/>
+                            <constraint firstItem="11R-wn-VXw" firstAttribute="height" secondItem="qJo-PG-3vX" secondAttribute="height" id="5Pv-6T-1wY"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="qJo-PG-3vX" secondAttribute="bottom" constant="10" id="5xz-PV-XKm"/>
                             <constraint firstItem="qJo-PG-3vX" firstAttribute="top" secondItem="a1a-EK-nCb" secondAttribute="bottom" constant="20" id="KBG-1C-q6j"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="a1a-EK-nCb" secondAttribute="trailing" constant="10" id="LHz-Nm-2L2"/>
+                            <constraint firstItem="11R-wn-VXw" firstAttribute="width" secondItem="qJo-PG-3vX" secondAttribute="width" id="NEo-eN-i4r"/>
                             <constraint firstItem="a1a-EK-nCb" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="Ry1-cF-yxN"/>
                             <constraint firstItem="a1a-EK-nCb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="Ufp-9x-GjS"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="11R-wn-VXw" secondAttribute="trailing" constant="10" id="rS5-lX-jMZ"/>
                             <constraint firstItem="qJo-PG-3vX" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="yCV-fn-JOg"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="cardsLeftLabel" destination="11R-wn-VXw" id="2eF-9h-wNH"/>
                         <outletCollection property="cardButtons" destination="4zZ-oD-Hp0" collectionClass="NSMutableArray" id="yIj-DV-fgc"/>
                         <outletCollection property="cardButtons" destination="n0r-bB-dsd" collectionClass="NSMutableArray" id="wwP-mv-bzU"/>
                         <outletCollection property="cardButtons" destination="Wra-X3-bVi" collectionClass="NSMutableArray" id="x0b-md-iuO"/>
