@@ -71,12 +71,15 @@ class ViewController: UIViewController {
     }
 
     func updateCardsDealed() {
-        for cardIndex in cards.indices {
-            let card = cards[cardIndex]
-
-            let title = getCardPip(with: card)
-            cardButtons[cardIndex].setAttributedTitle(title, for: .normal)
-            cardButtons[cardIndex].setAttributedTitle(title, for: .selected)
+        for cardIndex in cardButtons.indices {
+            if Int(cardIndex) < cards.endIndex {
+                let card = cards[cardIndex]
+                let title = getCardPip(with: card)
+                cardButtons[cardIndex].setAttributedTitle(title, for: .normal)
+                cardButtons[cardIndex].setAttributedTitle(title, for: .selected)
+            } else {
+                cardButtons[cardIndex].backgroundColor = .clear
+            }
 
         }
 
