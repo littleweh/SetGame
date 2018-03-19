@@ -11,13 +11,24 @@ import UIKit
 class ViewController: UIViewController {
     var deck = CardDeck()
 
+    @IBAction func dealThreeCardsButtonTapped(_ sender: UIButton) {
+        print("deal 3 more cards button tapped")
+    }
+
     @IBAction func cardButtonTapped(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         if sender.isSelected == true {
             sender.layer.borderColor = UIColor.yellow.cgColor
+            sender.backgroundColor = UIColor.darkGray.withAlphaComponent(0.8)
             sender.layer.borderWidth = 3.0
         } else {
             sender.layer.borderColor = UIColor.clear.cgColor
+            sender.backgroundColor = UIColor(
+                red: 118/255.0,
+                green: 214/255.0,
+                blue: 1.0,
+                alpha: 1.0
+            )
             sender.layer.borderWidth = 0.0
         }
     }
