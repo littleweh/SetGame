@@ -11,11 +11,24 @@ import UIKit
 class ViewController: UIViewController {
     var deck = CardDeck()
 
-    var cards = [Card]()
+    var cards = [Card]() {
+        didSet {
+            updateCardsDealed()
+        }
+    }
 
     @IBOutlet var cardButtons: [UIButton]!
     @IBAction func dealThreeCardsButtonTapped(_ sender: UIButton) {
-        print("deal 3 more cards button tapped")
+        if cards.count + 3 <= cardButtons.count {
+            addThreeCards()
+        } else {
+            let alert = UIAlertController(title: "cards number limits", message: "Due to screen limit, cards can not be added", preferredStyle: UIAlertControllerStyle.alert)
+            let action = UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                self.dismiss(animated: true, completion: nil)
+            })
+            alert.addAction(action)
+            present(alert, animated: true, completion: nil)
+        }
     }
 
     @IBAction func cardButtonTapped(_ sender: UIButton) {
@@ -57,9 +70,16 @@ class ViewController: UIViewController {
 
 
         gameStart()
-        updateCardsDealed()
 
         print("end")
+    }
+
+    func addThreeCards() {
+        for _ in 0..<3 {
+            if let card = deck.draw() {
+                cards.append(card)
+            }
+        }
     }
 
     func gameStart() {
@@ -73,6 +93,7 @@ class ViewController: UIViewController {
     func updateCardsDealed() {
         for cardIndex in cardButtons.indices {
             if Int(cardIndex) < cards.endIndex {
+                cardButtons[cardIndex].backgroundColor = .white
                 let card = cards[cardIndex]
                 let title = getCardPip(with: card)
                 cardButtons[cardIndex].setAttributedTitle(title, for: .normal)
@@ -80,7 +101,6 @@ class ViewController: UIViewController {
             } else {
                 cardButtons[cardIndex].backgroundColor = .clear
             }
-
         }
 
     }
