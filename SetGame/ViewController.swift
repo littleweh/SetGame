@@ -26,7 +26,7 @@ class ViewController: UIViewController {
             if sender.isSelected == true {
                 sender.layer.borderColor = UIColor.yellow.cgColor
                 sender.layer.borderWidth = 3.0
-                chooseCard(with: cards[index])
+                selectCard(with: cards[index])
             } else {
                 sender.layer.borderColor = UIColor.clear.cgColor
                 sender.layer.borderWidth = 0.0
@@ -60,15 +60,31 @@ class ViewController: UIViewController {
 
     }
 
-    func chooseCard(with card: Card) {
+    func selectCard(with card: Card) {
         assert(chosenCards.count < 3, "3 chosenCards at most")
         chosenCards.append(card)
         if chosenCards.count == 3 {
-            let isSet = isCardsMatchedSet(with: chosenCards)
-            if isSet {
+            let isSet = isCardsMatchedSet()
+
+//            if isSet {
+            if 0 == 0 {
                 print("Set matched")
+                for card in chosenCards {
+                    if let index = self.cards.index(of: card) {
+                        self.cards.remove(at: index)
+                        if self.cards.count < 12 && deck.cards.count > 0 {
+                            if let card = deck.draw() {
+                                self.cards.insert(card, at: index)
+                            }
+                        }
+                    }
+
+                }
+                self.chosenCards = []
             } else {
                 print("Set not matched")
+                chosenCards = []
+                updateCardsDealed()
             }
         }
     }
@@ -82,10 +98,10 @@ class ViewController: UIViewController {
         }
     }
 
-    func isCardsMatchedSet(with cards: [Card]) -> Bool {
+    func isCardsMatchedSet() -> Bool {
         assert(
-            cards.count == 3,
-            "\(cards.count) cards cannot be a set, a set of cards consist of 3 cards"
+            self.chosenCards.count == 3,
+            "\(self.chosenCards.count) cards cannot be a set, a set of cards consist of 3 cards"
         )
 
         var cardFeatureCheckSum: [Int] = Array(
@@ -93,7 +109,7 @@ class ViewController: UIViewController {
             count: CardFeatureItem.all.count
         )
 
-        for card in cards {
+        for card in chosenCards {
             for item in CardFeatureItem.all {
                 let index = item.rawValue
                 cardFeatureCheckSum[index] += card.features[index].rawValue
@@ -142,13 +158,21 @@ class ViewController: UIViewController {
     func updateCardsDealed() {
         for cardIndex in cardButtons.indices {
             if Int(cardIndex) < cards.endIndex {
+                cardButtons[cardIndex].isEnabled = true
                 cardButtons[cardIndex].backgroundColor = .white
+                cardButtons[cardIndex].isSelected = false
+                cardButtons[cardIndex].layer.borderColor = UIColor.clear.cgColor
+                cardButtons[cardIndex].layer.borderWidth = 0.0
+
                 let card = cards[cardIndex]
                 let title = getCardPip(with: card)
                 cardButtons[cardIndex].setAttributedTitle(title, for: .normal)
                 cardButtons[cardIndex].setAttributedTitle(title, for: .selected)
             } else {
                 cardButtons[cardIndex].backgroundColor = .clear
+                cardButtons[cardIndex].setTitle(nil, for: .normal)
+                cardButtons[cardIndex].setAttributedTitle(nil, for: .normal)
+                cardButtons[cardIndex].isEnabled = false
             }
         }
 
