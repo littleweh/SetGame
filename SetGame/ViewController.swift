@@ -45,6 +45,9 @@ class ViewController: UIViewController {
                 "Cards: \(deck.cards.count)",
                 comment: "cards left count in VC"
             )
+            if cards.count == 0 {
+                showNewGameAlert()
+            }
         }
     }
 
@@ -133,8 +136,23 @@ class ViewController: UIViewController {
             title: "OK",
             style: .default,
             handler: { (action) in
-            self.dismiss(animated: true, completion: nil)
+                self.dismiss(animated: true, completion: nil)
         })
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+    }
+
+    func newGame() {
+        deck = CardDeck()
+        gameStart()
+    }
+
+    func showNewGameAlert() {
+        let alert = UIAlertController(title: "New Game", message: "Good Job! Try new game?", preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .default) { (action) in
+            self.dismiss(animated: true, completion: nil)
+            self.newGame()
+        }
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
     }
