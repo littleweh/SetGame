@@ -47,6 +47,9 @@ class Set {
             if let index = chosenCards.index(of: card) {
                 chosenCards.remove(at: index)
             }
+            if let index = cardsOnTable.index(of: card) {
+                cardsOnTable[index].isSelected = false
+            }
         }
     }
 
@@ -75,6 +78,9 @@ class Set {
 
     func selectCard(with card: Card, completionHandler: () -> ()) {
         if !chosenCards.contains(card) {
+            if let index = cardsOnTable.index(of: card) {
+                cardsOnTable[index].isSelected = true
+            }
             if chosenCards.count == 3 {
                 if isCardsMatchedSet(with: chosenCards) {
                     removeMatchedSetCardsAndDeal3More(with: chosenCards, completionHandler: completionHandler)
@@ -82,7 +88,7 @@ class Set {
                 for card in chosenCards {
                     deselectCard(with: card)
                 }
-//                completionHandler()
+                completionHandler()
             }
             chosenCards.append(card)
         }

@@ -40,19 +40,26 @@ class ViewController: UIViewController {
         game.newGameWithCard(number: numberOfCardDealtAtFirst, updateCardsDealed)
     }
 
+    func showCardSelectedStatus(with sender: UIButton) {
+        if sender.isSelected {
+            sender.layer.borderColor = UIColor.yellow.cgColor
+            sender.layer.borderWidth = 3.0
+        } else {
+            sender.layer.borderColor = UIColor.clear.cgColor
+            sender.layer.borderWidth = 0.0
+        }
+    }
+
     @IBAction func cardButtonTapped(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         if let index = cardButtons.index(of: sender) {
+            showCardSelectedStatus(with: sender)
             if sender.isSelected == true {
-                sender.layer.borderColor = UIColor.yellow.cgColor
-                sender.layer.borderWidth = 3.0
                 game.selectCard(
                     with: game.cardsOnTable[index],
                     completionHandler: updateCardsDealed
                 )
             } else {
-                sender.layer.borderColor = UIColor.clear.cgColor
-                sender.layer.borderWidth = 0.0
                 game.deselectCard(with: game.cardsOnTable[index])
             }
         }
@@ -93,22 +100,23 @@ class ViewController: UIViewController {
 
     func updateCardsDealed() {
         for cardIndex in cardButtons.indices {
+            let cardButton = cardButtons[cardIndex]
             if Int(cardIndex) < game.cardsOnTable.endIndex {
-                cardButtons[cardIndex].isEnabled = true
-                cardButtons[cardIndex].backgroundColor = .white
-                cardButtons[cardIndex].isSelected = false
-                cardButtons[cardIndex].layer.borderColor = UIColor.clear.cgColor
-                cardButtons[cardIndex].layer.borderWidth = 0.0
-
                 let card = game.cardsOnTable[cardIndex]
                 let title = getCardPip(with: card)
-                cardButtons[cardIndex].setAttributedTitle(title, for: .normal)
-                cardButtons[cardIndex].setAttributedTitle(title, for: .selected)
+
+                cardButton.isEnabled = true
+                cardButton.backgroundColor = .white
+                cardButton.isSelected = card.isSelected
+                showCardSelectedStatus(with: cardButton)
+
+                cardButton.setAttributedTitle(title, for: .normal)
+                cardButton.setAttributedTitle(title, for: .selected)
             } else {
-                cardButtons[cardIndex].backgroundColor = .clear
-                cardButtons[cardIndex].setTitle(nil, for: .normal)
-                cardButtons[cardIndex].setAttributedTitle(nil, for: .normal)
-                cardButtons[cardIndex].isEnabled = false
+                cardButton.backgroundColor = .clear
+                cardButton.setTitle(nil, for: .normal)
+                cardButton.setAttributedTitle(nil, for: .normal)
+                cardButton.isEnabled = false
             }
         }
         cardsLeftLabel.text = NSLocalizedString(
