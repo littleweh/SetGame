@@ -22,6 +22,11 @@ struct Card: Equatable {
     }
 
     var features = [CardFeature]()
+    var isSelected:Bool = false
+
+    init(features: [CardFeature]) {
+        self.features = features
+    }
 
 
 }

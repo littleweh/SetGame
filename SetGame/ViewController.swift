@@ -9,15 +9,35 @@
 import UIKit
 
 class ViewController: UIViewController {
+
+    var game = Set()
+    var numberOfCardDealtAtFirst: Int = 12
+    var isMoreRoomFor3Cards: Bool {
+        return (game.cardsOnTable.count + 3 <= cardButtons.count)
+    }
+
     @IBOutlet weak var cardsLeftLabel: UILabel!
+    @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet weak var dealThreeCardsButton: UIButton!
 
     @IBOutlet var cardButtons: [UIButton]!
     @IBAction func dealThreeCardsButtonTapped(_ sender: UIButton) {
-        if cards.count + 3 <= cardButtons.count {
-            addThreeCards()
+        if isMoreRoomFor3Cards && !game.deck.isEmpty {
+            if game.chosenCards.count == 3 && game.isCardsMatchedSet(with: game.chosenCards) {
+                game.removeMatchedSetCardsAndDeal3More(
+                    with: game.chosenCards,
+                    completionHandler: updateCardsDealed
+                )
+            } else {
+                game.add3Cards(with: updateCardsDealed)
+            }
         } else {
             showCardsLimitAlert()
         }
+    }
+
+    @IBAction func newGameButtonTapped(_ sender: UIButton) {
+        game.newGameWithCard(number: numberOfCardDealtAtFirst, updateCardsDealed)
     }
 
     @IBAction func cardButtonTapped(_ sender: UIButton) {
@@ -26,104 +46,23 @@ class ViewController: UIViewController {
             if sender.isSelected == true {
                 sender.layer.borderColor = UIColor.yellow.cgColor
                 sender.layer.borderWidth = 3.0
-                selectCard(with: cards[index])
+                game.selectCard(
+                    with: game.cardsOnTable[index],
+                    completionHandler: updateCardsDealed
+                )
             } else {
                 sender.layer.borderColor = UIColor.clear.cgColor
                 sender.layer.borderWidth = 0.0
-                deselectCard(with: cards[index])
+                game.deselectCard(with: game.cardsOnTable[index])
             }
         }
 
-    }
-
-    var deck = CardDeck()
-
-    var cards = [Card]() {
-        didSet {
-            updateCardsDealed()
-            cardsLeftLabel.text = NSLocalizedString(
-                "Cards: \(deck.cards.count)",
-                comment: "cards left count in VC"
-            )
-            if cards.count == 0 {
-                showNewGameAlert()
-            }
-        }
-    }
-
-    var chosenCards = [Card]() {
-        didSet {
-            print("chosen Cards didSet with \(chosenCards.count) cards")
-        }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        gameStart()
+        game.newGameWithCard(number: numberOfCardDealtAtFirst, updateCardsDealed)
 
-    }
-
-    func selectCard(with card: Card) {
-        assert(chosenCards.count < 3, "3 chosenCards at most")
-        chosenCards.append(card)
-        if chosenCards.count == 3 {
-            let isSet = isCardsMatchedSet()
-
-//            if isSet {
-            if 0 == 0 {
-                print("Set matched")
-                for card in chosenCards {
-                    if let index = self.cards.index(of: card) {
-                        self.cards.remove(at: index)
-                        if self.cards.count < 12 && deck.cards.count > 0 {
-                            if let card = deck.draw() {
-                                self.cards.insert(card, at: index)
-                            }
-                        }
-                    }
-
-                }
-                self.chosenCards = []
-            } else {
-                print("Set not matched")
-                chosenCards = []
-                updateCardsDealed()
-            }
-        }
-    }
-
-    func deselectCard(with card: Card) {
-        assert(chosenCards.count > 0 && chosenCards.count < 3, "deselect card only allowed when 1 or 2 card(s) are chosen")
-        if let index = chosenCards.index(of: card) {
-            chosenCards.remove(at: index)
-        } else {
-            print("the card is not in chosen cards")
-        }
-    }
-
-    func isCardsMatchedSet() -> Bool {
-        assert(
-            self.chosenCards.count == 3,
-            "\(self.chosenCards.count) cards cannot be a set, a set of cards consist of 3 cards"
-        )
-
-        var cardFeatureCheckSum: [Int] = Array(
-            repeating: 0,
-            count: CardFeatureItem.all.count
-        )
-
-        for card in chosenCards {
-            for item in CardFeatureItem.all {
-                let index = item.rawValue
-                cardFeatureCheckSum[index] += card.features[index].rawValue
-            }
-        }
-
-        // check set match
-        for checksum in cardFeatureCheckSum {
-            if checksum % 3 != 0 { return false }
-        }
-        return true
     }
 
     func showCardsLimitAlert() {
@@ -142,47 +81,26 @@ class ViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    func newGame() {
-        deck = CardDeck()
-        gameStart()
-    }
-
     func showNewGameAlert() {
         let alert = UIAlertController(title: "New Game", message: "Good Job! Try new game?", preferredStyle: .alert)
         let action = UIAlertAction(title: "OK", style: .default) { (action) in
             self.dismiss(animated: true, completion: nil)
-            self.newGame()
+            self.game.newGameWithCard(number: self.numberOfCardDealtAtFirst, self.updateCardsDealed)
         }
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
     }
 
-    func addThreeCards() {
-        for _ in 0..<3 {
-            if let card = deck.draw() {
-                cards.append(card)
-            }
-        }
-    }
-
-    func gameStart() {
-        for _ in 0..<12 {
-            if let card = deck.draw() {
-                cards.append(card)
-            }
-        }
-    }
-
     func updateCardsDealed() {
         for cardIndex in cardButtons.indices {
-            if Int(cardIndex) < cards.endIndex {
+            if Int(cardIndex) < game.cardsOnTable.endIndex {
                 cardButtons[cardIndex].isEnabled = true
                 cardButtons[cardIndex].backgroundColor = .white
                 cardButtons[cardIndex].isSelected = false
                 cardButtons[cardIndex].layer.borderColor = UIColor.clear.cgColor
                 cardButtons[cardIndex].layer.borderWidth = 0.0
 
-                let card = cards[cardIndex]
+                let card = game.cardsOnTable[cardIndex]
                 let title = getCardPip(with: card)
                 cardButtons[cardIndex].setAttributedTitle(title, for: .normal)
                 cardButtons[cardIndex].setAttributedTitle(title, for: .selected)
@@ -193,6 +111,10 @@ class ViewController: UIViewController {
                 cardButtons[cardIndex].isEnabled = false
             }
         }
+        cardsLeftLabel.text = NSLocalizedString(
+            "Cards: \(game.deck.cards.count)",
+            comment: "cards left count in VC"
+        )
 
     }
 
@@ -229,12 +151,8 @@ class ViewController: UIViewController {
                 NSAttributedStringKey.foregroundColor : color.uiColor.withAlphaComponent(shading.alpha)
             ]
         )
-
         return attribute
-
     }
-
-
 
 }
 

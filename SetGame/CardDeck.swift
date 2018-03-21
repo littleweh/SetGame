@@ -11,6 +11,9 @@ import Foundation
 struct CardDeck {
     private(set) var cards = [Card]()
     private var features = [CardFeature]()
+    var isEmpty: Bool {
+        return cards.count == 0
+    }
 
     init() {
         // need to use recursive or other method?
